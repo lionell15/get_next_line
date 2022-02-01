@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lespinoz <lespinoz@student.42barcel>       +#+  +:+       +#+        */
+/*   By: lespinoz <lespinoz@student.42barcelona.com>+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/20 10:52:51 by lespinoz          #+#    #+#             */
-/*   Updated: 2022/01/31 14:42:47 by lespinoz         ###   ########.fr       */
+/*   Created: 2022/02/01 14:29:24 by lespinoz          #+#    #+#             */
+/*   Updated: 2022/02/01 15:19:53 by lespinoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,18 @@
 
 # include <unistd.h>
 # include <stdlib.h>
-# include <fcntl.h>
 # include <limits.h>
+# include <fcntl.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
 
 char	*get_next_line(int fd);
-size_t	ft_strlen(const char *s);
+void	ft_free_null(char **pt);
+char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strchr(const char *str, int n);
+size_t	ft_strlen(const char *str);
+char	*ft_strdup(const char *str);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
-int		ft_strchr(const char *s, int c);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
-size_t	ft_strlcat(char *dst, const char *src, size_t size);
-
 #endif

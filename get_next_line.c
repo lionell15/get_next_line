@@ -3,102 +3,79 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lespinoz <lespinoz@student.42barcel>       +#+  +:+       +#+        */
+/*   By: lespinoz <lespinoz@student.42barcelona.com>+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/20 10:54:57 by lespinoz          #+#    #+#             */
-/*   Updated: 2022/01/31 15:06:53 by lespinoz         ###   ########.fr       */
+/*   Created: 2022/02/01 14:15:11 by lespinoz          #+#    #+#             */
+/*   Updated: 2022/02/01 15:18:34 by lespinoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*ft_read(int fd)
+static char	*join_line(int nl_position, char **buffer)
 {
-	char	*aux;
-	int		bytesize;
+	char	*res;
+	char	*tmp;
 
-	aux = malloc(BUFFER_SIZE + 1);
-	if (!aux)
-		return (NULL);
-	bytesize = read(fd, aux, BUFFER_SIZE);
-	if (bytesize < 0)
+	tmp = NULL;
+	if (nl_position <= 0)
 	{
-		free(aux);
-		return (NULL);
+		if (**buffer == '\0')
+		{
+			free(*buffer);
+			*buffer = NULL;
+			return (NULL);
+		}
+		res = *buffer;
+		*buffer = NULL;
+		return (res);
 	}
-	aux[bytesize] = '\0';
-	return (aux);
+	tmp = ft_substr(*buffer, nl_position, BUFFER_SIZE);
+	res = *buffer;
+	res[nl_position] = 0;
+	*buffer = tmp;
+	return (res);
 }
 
-static char	*ft_expand_buffer(char *buff, int fd)
+static char	*read_line(int fd, char **buffer, char *read_return)
 {
-	char	*newbuffer;
-	int		newsize;
-	char	*aux;
+	ssize_t	bytes_read;
+	char	*tmp;
+	char	*nl;
 
-	aux = ft_read(fd);
-	if (!aux)
-		return (NULL);
-	if (!aux[0])
+	nl = ft_strchr(*buffer, '\n');
+	tmp = NULL;
+	bytes_read = 0;
+	while (nl == NULL)
 	{
-		free(aux);
-		return (buff);
+		bytes_read = read(fd, read_return, BUFFER_SIZE);
+		if (bytes_read <= 0)
+			return (join_line(bytes_read, buffer));
+		read_return[bytes_read] = 0;
+		tmp = ft_strjoin(*buffer, read_return);
+		ft_free_null(buffer);
+		*buffer = tmp;
+		nl = ft_strchr(*buffer, '\n');
 	}
-	if (!buff)
-		return (aux);
-	newsize = ft_strlen(buff) + ft_strlen(aux);
-	newbuffer = malloc(newsize + 1);
-	if (!newbuffer)
-		return (NULL);
-	ft_strlcpy(newbuffer, buff, newsize + 1);
-	ft_strlcat(newbuffer, aux, newsize + 1);
-	free(buff);
-	free(aux);
-	return (newbuffer);
-}
-
-static char	*ft_reduce_buffer(char *buff, char *line)
-{
-	char	*newbuffer;
-	int		line_size;
-
-	if (!buff || !line)
-		return (buff);
-	line_size = ft_strlen(line);
-	if ((int)ft_strlen(buff) == line_size)
-	{
-		free(buff);
-		return (NULL);
-	}
-	newbuffer = ft_substr(buff, line_size, ft_strlen(buff) - line_size);
-	free(buff);
-	return (newbuffer);
+	return (join_line(nl - *buffer + 1, buffer));
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer[4096];
-	char		*line;
-	size_t		size_buffer;
+	static char	*buffer[PATH_MAX];
+	char		*ret;
+	char		*result;
 
-	line = NULL;
-	if (fd < 0 || fd > 4095 || BUFFER_SIZE < 0)
+	if (BUFFER_SIZE < 0)
 		return (NULL);
-	if (ft_strchr(buffer[fd], '\n') == -1)
-	{
-		size_buffer = ft_strlen(buffer[fd]);
-		buffer[fd] = ft_expand_buffer(buffer[fd], fd);
-		if (size_buffer == ft_strlen(buffer[fd]) && buffer[fd])
-			line = ft_substr(buffer[fd], 0, size_buffer);
-	}
+	if (fd < 0 || fd > PATH_MAX)
+		return (NULL);
+	ret = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (ret == NULL)
+		return (NULL);
 	if (!buffer[fd])
-		return (NULL);
-	if (!line && ft_strchr(buffer[fd], '\n') != -1)
-		line = ft_substr(buffer[fd], 0, ft_strchr(buffer[fd], '\n') + 1);
-	if (line)
-	{
-		buffer[fd] = ft_reduce_buffer(buffer[fd], line);
-		return (line);
-	}
-	return (get_next_line(fd));
+		buffer[fd] = ft_strdup("");
+	result = read_line(fd, &buffer[fd], ret);
+	ft_free_null(&ret);
+	return (result);
 }
