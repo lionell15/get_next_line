@@ -46,7 +46,7 @@ static char	*join_line(int nl_position, char **buffer)
 	return (res);
 }
 
-static char	*ft_read(int fd, char **buffer, char *read_return)
+static char	*read_line(int fd, char **buffer, char *read_return)
 {
 	ssize_t	bytes_read;
 	char	*tmp;
@@ -71,18 +71,20 @@ static char	*ft_read(int fd, char **buffer, char *read_return)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[PATH_MAX];
 	char		*aux;
 	char		*line;
 
-	if (BUFFER_SIZE < 0 || fd < 0)
+	if (BUFFER_SIZE < 0)
 		return (NULL);
-	aux = (char *)malloc(BUFFER_SIZE + 1);
+	if (fd < 0 || fd > PATH_MAX)
+		return (NULL);
+	aux = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (aux == NULL)
 		return (NULL);
-	if (!buffer)
-		buffer = ft_strdup("");
-	line = ft_read(fd, &buffer, aux);
+	if (!buffer[fd])
+		buffer[fd] = ft_strdup("");
+	line = read_line(fd, &buffer[fd], aux);
 	ft_free_null(&aux);
 	return (line);
 }
