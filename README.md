@@ -2,6 +2,8 @@
 
 ## Parte obligatoria
 
+<center>
+ 
 | Nombre de función: | get_next_line |
 |--------------------|---------------|
 | Prototipo: | char *get_next_line(int fd); |
@@ -10,6 +12,8 @@
 | Valor de retorno: | Si todo va bien: la línea leída </br> En caso de fallo o si la lectura termina: NULL |
 | Funciones autorizadas: | read, malloc, free |
 | Descripción: | Escribe una función que devuelva la línea leída de un file descriptor. |
+
+</center>
 
 - Llamar a tu función get_next_line en un bucle te permitirá leer el contenido de
 un file descriptor línea a línea hasta el final.
