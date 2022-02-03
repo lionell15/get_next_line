@@ -8,3 +8,7 @@
 | Valor de retorno: | Si todo va bien: la línea leída </br> En caso de fallo o si la lectura termina: NULL |
 | Funciones autorizadas: | read, malloc, free |
 | Descripción: | Escribe una función que devuelva la línea leída de un file descriptor. |
+
+
+
+NO TERMINADO
