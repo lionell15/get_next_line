@@ -21,13 +21,13 @@ static void	ft_free_null(char **pt)
 	}
 }
 
-static char	*join_line(int nl_position, char **buffer)
+static char	*join_line(int nl_index, char **buffer)
 {
-	char	*res;
+	char	*result;
 	char	*tmp;
 
 	tmp = NULL;
-	if (nl_position <= 0)
+	if (nl_index <= 0)
 	{
 		if (**buffer == '\0')
 		{
@@ -35,18 +35,18 @@ static char	*join_line(int nl_position, char **buffer)
 			*buffer = NULL;
 			return (NULL);
 		}
-		res = *buffer;
+		result = *buffer;
 		*buffer = NULL;
-		return (res);
+		return (result);
 	}
-	tmp = ft_substr(*buffer, nl_position, BUFFER_SIZE);
-	res = *buffer;
-	res[nl_position] = 0;
+	tmp = ft_substr(*buffer, nl_index, BUFFER_SIZE);
+	result = *buffer;
+	result[nl_index] = 0;
 	*buffer = tmp;
-	return (res);
+	return (result);
 }
 
-static char	*ft_read(int fd, char **buffer, char *read_return)
+static char	*ft_read(int fd, char **buffer, char *aux)
 {
 	ssize_t	bytes_read;
 	char	*tmp;
@@ -57,11 +57,11 @@ static char	*ft_read(int fd, char **buffer, char *read_return)
 	bytes_read = 0;
 	while (nl == NULL)
 	{
-		bytes_read = read(fd, read_return, BUFFER_SIZE);
+		bytes_read = read(fd, aux, BUFFER_SIZE);
 		if (bytes_read <= 0)
 			return (join_line(bytes_read, buffer));
-		read_return[bytes_read] = 0;
-		tmp = ft_strjoin(*buffer, read_return);
+		aux[bytes_read] = 0;
+		tmp = ft_strjoin(*buffer, aux);
 		ft_free_null(buffer);
 		*buffer = tmp;
 		nl = ft_strchr(*buffer, '\n');
