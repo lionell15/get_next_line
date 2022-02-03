@@ -2,7 +2,7 @@
 
 ## Parte obligatoria
 
-<center>
+<div align="center">
  
 | Nombre de función: | get_next_line |
 |--------------------|---------------|
@@ -13,7 +13,7 @@
 | Funciones autorizadas: | read, malloc, free |
 | Descripción: | Escribe una función que devuelva la línea leída de un file descriptor. |
 
-</center>
+</div>
 
 - Llamar a tu función get_next_line en un bucle te permitirá leer el contenido de
 un file descriptor línea a línea hasta el final.
