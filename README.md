@@ -56,5 +56,3 @@ Entrega los tres archivos iniciales con _bonus.[c/h] para esta parte.
 disponibles para lectura (por ejemplo: 3, 4 y 5), debes poder utilizar get_next_line
 una vez sobre el fd 3, otra vez sobre el fd 4, y otra vez sobre el fd 5 de forma
 intermitente. Y sí, no debe perder el hilo de lectura de cada uno de los fd.
- 
-NO TERMINADO
